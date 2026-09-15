@@ -3,6 +3,16 @@
 /*
   Dorker
   Passive OSINT query builder for authorized external assessments.
+
+  Designed for:
+  - htmlpreview.github.io
+  - GitHub Pages
+  - local browser use
+
+  No frameworks.
+  No build tools.
+  No modules.
+  Classic JavaScript syntax for broad compatibility.
 */
 
 var MAX_QUERIES = 500;
@@ -11,7 +21,7 @@ var QUERY_PACKS = [
   {
     id: "attack-surface",
     name: "Attack Surface",
-    description: "Public apps, portals, admin paths, remote access and support surfaces.",
+    description: "Public applications, portals, administrative paths, remote access and support surfaces.",
     queries: [
       [
         "Application and portal paths",
@@ -44,7 +54,7 @@ var QUERY_PACKS = [
   {
     id: "authentication",
     name: "Authentication",
-    description: "Login, SSO, federation and account-management surfaces.",
+    description: "Login pages, SSO, SAML, federation, OAuth, OIDC and account-management surfaces.",
     queries: [
       [
         "Login pages",
@@ -77,7 +87,7 @@ var QUERY_PACKS = [
   {
     id: "non-production",
     name: "Dev / Test",
-    description: "Development, testing, staging, QA, UAT and sandbox references.",
+    description: "Development, testing, staging, QA, UAT, sandbox and demo environment references.",
     queries: [
       [
         "Development environments",
@@ -110,8 +120,13 @@ var QUERY_PACKS = [
   {
     id: "api",
     name: "API / Developer",
-    description: "API paths, Swagger, OpenAPI, GraphQL and structured API material.",
-    types: ["json", "xml", "yaml", "yml"],
+    description: "APIs, Swagger, OpenAPI, GraphQL, developer portals and structured API material.",
+    types: [
+      "json",
+      "xml",
+      "yaml",
+      "yml"
+    ],
     queries: [
       [
         "API paths",
@@ -125,7 +140,7 @@ var QUERY_PACKS = [
       ],
       [
         "Developer portals",
-        "Find public developer portals and docs.",
+        "Find public developer portals and documentation.",
         "site:{domain} (inurl:developer OR inurl:developers OR inurl:docs)"
       ],
       [
@@ -135,7 +150,7 @@ var QUERY_PACKS = [
       ],
       [
         "Structured API material",
-        "Find indexed structured data associated with APIs or integrations.",
+        "Find structured files associated with APIs and integrations.",
         "site:{domain} {types} (\"api\" OR \"endpoint\" OR \"integration\")"
       ]
     ]
@@ -145,7 +160,13 @@ var QUERY_PACKS = [
     id: "documents",
     name: "Technical Documents",
     description: "Architecture, network, deployment, operations and security documentation.",
-    types: ["pdf", "doc", "docx", "ppt", "pptx"],
+    types: [
+      "pdf",
+      "doc",
+      "docx",
+      "ppt",
+      "pptx"
+    ],
     queries: [
       [
         "Architecture documents",
@@ -174,7 +195,11 @@ var QUERY_PACKS = [
     id: "spreadsheets",
     name: "Spreadsheets",
     description: "Publicly indexed spreadsheet and CSV material.",
-    types: ["xls", "xlsx", "csv"],
+    types: [
+      "xls",
+      "xlsx",
+      "csv"
+    ],
     queries: [
       [
         "Spreadsheet files",
@@ -183,12 +208,12 @@ var QUERY_PACKS = [
       ],
       [
         "Inventory and asset spreadsheets",
-        "Find spreadsheet content that references inventory or asset information.",
+        "Find spreadsheet material related to inventory, assets or systems.",
         "site:{domain} {types} (\"inventory\" OR \"asset\" OR \"systems\")"
       ],
       [
         "Contact and directory spreadsheets",
-        "Find spreadsheet content referencing contact or directory information.",
+        "Find spreadsheet material associated with contacts, directories or employees.",
         "site:{domain} {types} (\"contact\" OR \"directory\" OR \"employee\")"
       ]
     ]
@@ -198,7 +223,10 @@ var QUERY_PACKS = [
     id: "text-material",
     name: "Text / Logs",
     description: "Publicly indexed plaintext and log-format material.",
-    types: ["txt", "log"],
+    types: [
+      "txt",
+      "log"
+    ],
     queries: [
       [
         "Text and log files",
@@ -212,7 +240,7 @@ var QUERY_PACKS = [
       ],
       [
         "Operational text",
-        "Find indexed text or logs referencing systems or operations.",
+        "Find indexed text or logs referencing systems, applications or services.",
         "site:{domain} {types} (\"system\" OR \"service\" OR \"application\")"
       ]
     ]
@@ -221,7 +249,7 @@ var QUERY_PACKS = [
   {
     id: "directories",
     name: "Directory Exposure",
-    description: "Common directory-listing and file-repository indicators.",
+    description: "Directory-listing indicators and publicly indexed file repositories.",
     queries: [
       [
         "Index of",
@@ -249,7 +277,7 @@ var QUERY_PACKS = [
   {
     id: "cloud",
     name: "Cloud / SaaS",
-    description: "Public references to cloud platforms, identity providers and common SaaS.",
+    description: "Public references to cloud platforms, identity providers and common SaaS services.",
     queries: [
       [
         "AWS references",
@@ -268,7 +296,7 @@ var QUERY_PACKS = [
       ],
       [
         "Identity provider references",
-        "Find public references to common identity platforms.",
+        "Find public references to common third-party identity providers.",
         "site:{domain} (\"okta.com\" OR \"auth0.com\" OR \"onelogin.com\")"
       ],
       [
@@ -282,7 +310,7 @@ var QUERY_PACKS = [
   {
     id: "public-code",
     name: "Public Code",
-    description: "Public code-hosting and developer-community references.",
+    description: "Public code-hosting platforms and developer-community references associated with the target.",
     queries: [
       [
         "GitHub references",
@@ -310,11 +338,11 @@ var QUERY_PACKS = [
   {
     id: "technology",
     name: "Technology Intelligence",
-    description: "Public clues about infrastructure, identity, cloud and technologies in use.",
+    description: "Public clues about infrastructure, cloud, identity and technologies used by the organization.",
     queries: [
       [
         "Platform references",
-        "Find pages that identify technologies used by the organization.",
+        "Find pages identifying technologies used by the organization.",
         "site:{domain} (\"powered by\" OR \"built with\" OR \"hosted on\")"
       ],
       [
@@ -343,7 +371,7 @@ var QUERY_PACKS = [
   {
     id: "organization",
     name: "Organization / Scope",
-    description: "Subsidiaries, acquisitions, brands, partners and portal references.",
+    description: "Subsidiaries, acquisitions, related brands, partners and business portals.",
     queries: [
       [
         "Subsidiaries",
@@ -352,7 +380,7 @@ var QUERY_PACKS = [
       ],
       [
         "Acquisitions",
-        "Find acquisitions and mergers that may create scope questions.",
+        "Find acquisitions and mergers that may create assessment scope questions.",
         "\"{domain}\" (\"acquired\" OR \"acquisition\" OR \"merger\")"
       ],
       [
@@ -362,7 +390,7 @@ var QUERY_PACKS = [
       ],
       [
         "Related brands",
-        "Find public references to related brands and operating names.",
+        "Find references to related brands and operating names.",
         "\"{domain}\" (\"brand\" OR \"operating as\" OR \"formerly known as\")"
       ],
       [
@@ -395,146 +423,504 @@ function byId(id) {
 
 function init() {
   el.targets = byId("targets");
-  el.queryPack = byId("queryPack");
-  el.packDescription = byId("packDescription");
-  el.exclusions = byId("exclusions");
-  el.reduceNoise = byId("reduceNoise");
-  el.excludeWww = byId("excludeWww");
-  el.generateBtn = byId("generateBtn");
-  el.resetBtn = byId("resetBtn");
-  el.resultSearch = byId("resultSearch");
-  el.copyAllBtn = byId("copyAllBtn");
-  el.exportBtn = byId("exportBtn");
-  el.resultCount = byId("resultCount");
-  el.message = byId("message");
-  el.emptyState = byId("emptyState");
-  el.results = byId("results");
 
-  populatePackDropdown();
+  el.packPickerButton =
+    byId("packPickerButton");
+
+  el.packPickerLabel =
+    byId("packPickerLabel");
+
+  el.packMenu =
+    byId("packMenu");
+
+  el.packOptions =
+    byId("packOptions");
+
+  el.packCount =
+    byId("packCount");
+
+  el.selectAllPacks =
+    byId("selectAllPacks");
+
+  el.clearAllPacks =
+    byId("clearAllPacks");
+
+  el.aboutPacks =
+    byId("aboutPacks");
+
+  el.exclusions =
+    byId("exclusions");
+
+  el.reduceNoise =
+    byId("reduceNoise");
+
+  el.excludeWww =
+    byId("excludeWww");
+
+  el.generateBtn =
+    byId("generateBtn");
+
+  el.resetBtn =
+    byId("resetBtn");
+
+  el.resultSearch =
+    byId("resultSearch");
+
+  el.copyAllBtn =
+    byId("copyAllBtn");
+
+  el.exportBtn =
+    byId("exportBtn");
+
+  el.resultCount =
+    byId("resultCount");
+
+  el.message =
+    byId("message");
+
+  el.emptyState =
+    byId("emptyState");
+
+  el.results =
+    byId("results");
+
+  renderPackOptions();
+  renderAboutPacks();
   bindEvents();
-  updatePackDescription();
+  updatePackSelectionDisplay();
 }
 
 function bindEvents() {
-  el.generateBtn.onclick = generateQueries;
-  el.resetBtn.onclick = resetApp;
-  el.resultSearch.onkeyup = filterResults;
-  el.copyAllBtn.onclick = copyAllVisible;
-  el.exportBtn.onclick = exportVisible;
+  el.packPickerButton.onclick =
+    function (event) {
+      stopEvent(event);
+      togglePackMenu();
+    };
 
-  el.queryPack.onchange = function () {
-    updatePackDescription();
-  };
+  el.packMenu.onclick =
+    function (event) {
+      stopEvent(event);
+    };
 
-  el.targets.onkeydown = function (event) {
-    event = event || window.event;
+  el.packOptions.onchange =
+    function () {
+      updatePackSelectionDisplay();
+    };
 
-    if ((event.ctrlKey || event.metaKey) && event.keyCode === 13) {
-      generateQueries();
-    }
-  };
+  el.selectAllPacks.onclick =
+    function () {
+      setAllPacks(true);
+    };
+
+  el.clearAllPacks.onclick =
+    function () {
+      setAllPacks(false);
+    };
+
+  document.onclick =
+    function () {
+      closePackMenu();
+    };
+
+  el.generateBtn.onclick =
+    generateQueries;
+
+  el.resetBtn.onclick =
+    resetApp;
+
+  el.resultSearch.onkeyup =
+    filterResults;
+
+  el.copyAllBtn.onclick =
+    copyAllVisible;
+
+  el.exportBtn.onclick =
+    exportVisible;
+
+  el.targets.onkeydown =
+    function (event) {
+      event =
+        event ||
+        window.event;
+
+      if (
+        (event.ctrlKey || event.metaKey) &&
+        event.keyCode === 13
+      ) {
+        generateQueries();
+      }
+    };
 }
 
-function populatePackDropdown() {
-  var html = "";
-  var i;
+function stopEvent(event) {
+  event =
+    event ||
+    window.event;
 
-  html += '<option value="">Choose a query pack...</option>';
-
-  for (i = 0; i < QUERY_PACKS.length; i += 1) {
-    html += '<option value="' +
-      escapeHtml(QUERY_PACKS[i].id) +
-      '">' +
-      escapeHtml(QUERY_PACKS[i].name) +
-      '</option>';
+  if (event.stopPropagation) {
+    event.stopPropagation();
   }
 
-  el.queryPack.innerHTML = html;
+  event.cancelBubble = true;
 }
 
-function updatePackDescription() {
-  var pack = getSelectedPack();
+function togglePackMenu() {
+  if (
+    el.packMenu.className.indexOf("open") !== -1
+  ) {
+    closePackMenu();
+  } else {
+    el.packMenu.className =
+      "pack-menu open";
+  }
+}
 
-  if (!pack) {
-    el.packDescription.innerHTML =
-      "Select a query pack to see what it searches for.";
+function closePackMenu() {
+  el.packMenu.className =
+    "pack-menu";
+}
+
+function renderPackOptions() {
+  var html = "";
+  var i;
+  var pack;
+
+  for (
+    i = 0;
+    i < QUERY_PACKS.length;
+    i += 1
+  ) {
+    pack =
+      QUERY_PACKS[i];
+
+    html +=
+      '<label class="pack-option">';
+
+    html +=
+      '<input type="checkbox" class="pack-checkbox" value="' +
+      escapeHtml(pack.id) +
+      '">';
+
+    html += "<span>";
+
+    html +=
+      '<span class="pack-option-name">' +
+      escapeHtml(pack.name) +
+      "</span>";
+
+    html +=
+      '<span class="pack-option-desc">' +
+      escapeHtml(pack.description) +
+      "</span>";
+
+    html += "</span>";
+    html += "</label>";
+  }
+
+  el.packOptions.innerHTML =
+    html;
+}
+
+function renderAboutPacks() {
+  var html = "";
+  var i;
+  var pack;
+
+  for (
+    i = 0;
+    i < QUERY_PACKS.length;
+    i += 1
+  ) {
+    pack =
+      QUERY_PACKS[i];
+
+    html +=
+      '<div class="about-pack">';
+
+    html +=
+      '<div class="about-pack-name">' +
+      escapeHtml(pack.name) +
+      "</div>";
+
+    html +=
+      '<div class="about-pack-desc">' +
+      escapeHtml(pack.description) +
+      "</div>";
+
+    if (
+      pack.types &&
+      pack.types.length > 0
+    ) {
+      html +=
+        '<div class="about-pack-types">File types: ' +
+        escapeHtml(
+          pack.types.join(", ")
+        ) +
+        "</div>";
+    }
+
+    html +=
+      '<div class="about-pack-types">Queries: ' +
+      pack.queries.length +
+      "</div>";
+
+    html += "</div>";
+  }
+
+  el.aboutPacks.innerHTML =
+    html;
+}
+
+function getPackCheckboxes() {
+  return el.packOptions
+    .getElementsByTagName("input");
+}
+
+function getSelectedPackIds() {
+  var inputs =
+    getPackCheckboxes();
+
+  var selected = [];
+  var i;
+
+  for (
+    i = 0;
+    i < inputs.length;
+    i += 1
+  ) {
+    if (inputs[i].checked) {
+      selected.push(
+        inputs[i].value
+      );
+    }
+  }
+
+  return selected;
+}
+
+function getSelectedPacks() {
+  var ids =
+    getSelectedPackIds();
+
+  var packs = [];
+  var i;
+
+  for (
+    i = 0;
+    i < QUERY_PACKS.length;
+    i += 1
+  ) {
+    if (
+      contains(
+        ids,
+        QUERY_PACKS[i].id
+      )
+    ) {
+      packs.push(
+        QUERY_PACKS[i]
+      );
+    }
+  }
+
+  return packs;
+}
+
+function setAllPacks(checked) {
+  var inputs =
+    getPackCheckboxes();
+
+  var i;
+
+  for (
+    i = 0;
+    i < inputs.length;
+    i += 1
+  ) {
+    inputs[i].checked =
+      checked;
+  }
+
+  updatePackSelectionDisplay();
+}
+
+function updatePackSelectionDisplay() {
+  var selected =
+    getSelectedPacks();
+
+  var count =
+    selected.length;
+
+  var names = [];
+  var i;
+
+  if (count === 0) {
+    el.packPickerLabel.innerHTML =
+      "Select query packs";
+
+    el.packCount.innerHTML =
+      "0 packs selected.";
+
     return;
   }
 
-  el.packDescription.innerHTML =
-    escapeHtml(pack.description) +
-    " " +
-    pack.queries.length +
-    " query template" +
-    (pack.queries.length === 1 ? "." : "s.");
-}
-
-function getSelectedPack() {
-  var selectedId = el.queryPack.value;
-  var i;
-
-  if (!selectedId) {
-    return null;
+  for (
+    i = 0;
+    i < selected.length;
+    i += 1
+  ) {
+    names.push(
+      selected[i].name
+    );
   }
 
-  for (i = 0; i < QUERY_PACKS.length; i += 1) {
-    if (QUERY_PACKS[i].id === selectedId) {
-      return QUERY_PACKS[i];
+  if (count === 1) {
+    el.packPickerLabel.innerHTML =
+      escapeHtml(names[0]);
+
+    el.packCount.innerHTML =
+      "1 pack selected.";
+  } else if (count <= 3) {
+    el.packPickerLabel.innerHTML =
+      escapeHtml(
+        names.join(", ")
+      );
+
+    el.packCount.innerHTML =
+      count +
+      " packs selected.";
+  } else {
+    el.packPickerLabel.innerHTML =
+      count +
+      " query packs selected";
+
+    el.packCount.innerHTML =
+      count +
+      " packs selected.";
+  }
+}
+
+function contains(array, value) {
+  var i;
+
+  for (
+    i = 0;
+    i < array.length;
+    i += 1
+  ) {
+    if (
+      array[i] === value
+    ) {
+      return true;
     }
   }
 
-  return null;
+  return false;
 }
 
 function buildTypesClause(types) {
   var parts = [];
   var i;
 
-  if (!types || types.length === 0) {
+  if (
+    !types ||
+    types.length === 0
+  ) {
     return "";
   }
 
-  for (i = 0; i < types.length; i += 1) {
-    parts.push("filetype:" + types[i]);
+  for (
+    i = 0;
+    i < types.length;
+    i += 1
+  ) {
+    parts.push(
+      "filetype:" +
+      types[i]
+    );
   }
 
-  if (parts.length === 1) {
+  if (
+    parts.length === 1
+  ) {
     return parts[0];
   }
 
-  return "(" + parts.join(" OR ") + ")";
+  return (
+    "(" +
+    parts.join(" OR ") +
+    ")"
+  );
 }
 
-function applyTemplate(template, domain, pack) {
-  var query = template;
-  var typesClause = "";
+function applyTemplate(
+  template,
+  domain,
+  pack
+) {
+  var query =
+    template;
 
-  query = query.split("{domain}").join(domain);
+  var typesClause =
+    "";
 
-  if (pack.types && pack.types.length > 0) {
-    typesClause = buildTypesClause(pack.types);
+  query =
+    query
+      .split("{domain}")
+      .join(domain);
+
+  if (
+    pack.types &&
+    pack.types.length > 0
+  ) {
+    typesClause =
+      buildTypesClause(
+        pack.types
+      );
   }
 
-  query = query.split("{types}").join(typesClause);
+  query =
+    query
+      .split("{types}")
+      .join(typesClause);
 
-  query = query.replace(/\s+/g, " ");
+  query =
+    query.replace(
+      /\s+/g,
+      " "
+    );
 
   return trim(query);
 }
 
 function parseDomains(value) {
-  var raw = value.split(/[\n,]+/);
+  var raw =
+    value.split(/[\n,]+/);
+
   var result = [];
   var seen = {};
   var i;
   var domain;
 
-  for (i = 0; i < raw.length; i += 1) {
-    domain = normalizeDomain(raw[i]);
+  for (
+    i = 0;
+    i < raw.length;
+    i += 1
+  ) {
+    domain =
+      normalizeDomain(
+        raw[i]
+      );
 
-    if (domain && !seen[domain]) {
-      seen[domain] = true;
-      result.push(domain);
+    if (
+      domain &&
+      !seen[domain]
+    ) {
+      seen[domain] =
+        true;
+
+      result.push(
+        domain
+      );
     }
   }
 
@@ -542,26 +928,63 @@ function parseDomains(value) {
 }
 
 function normalizeDomain(value) {
-  var domain = trim(value).toLowerCase();
+  var domain =
+    trim(value)
+      .toLowerCase();
 
   if (!domain) {
     return "";
   }
 
-  domain = domain.replace(/^https?:\/\//i, "");
-  domain = domain.replace(/^\/\//, "");
-  domain = domain.split("/")[0];
-  domain = domain.split("?")[0];
-  domain = domain.split("#")[0];
-  domain = domain.replace(/:\d+$/, "");
-  domain = domain.replace(/^\*\./, "");
-  domain = domain.replace(/\.$/, "");
+  domain =
+    domain.replace(
+      /^https?:\/\//i,
+      ""
+    );
 
-  if (domain.indexOf("www.") === 0) {
-    domain = domain.substring(4);
+  domain =
+    domain.replace(
+      /^\/\//,
+      ""
+    );
+
+  domain =
+    domain.split("/")[0];
+
+  domain =
+    domain.split("?")[0];
+
+  domain =
+    domain.split("#")[0];
+
+  domain =
+    domain.replace(
+      /:\d+$/,
+      ""
+    );
+
+  domain =
+    domain.replace(
+      /^\*\./,
+      ""
+    );
+
+  domain =
+    domain.replace(
+      /\.$/,
+      ""
+    );
+
+  if (
+    domain.indexOf("www.") === 0
+  ) {
+    domain =
+      domain.substring(4);
   }
 
-  if (!isValidDomain(domain)) {
+  if (
+    !isValidDomain(domain)
+  ) {
     return "";
   }
 
@@ -580,17 +1003,25 @@ function isValidDomain(domain) {
     return false;
   }
 
-  labels = domain.split(".");
+  labels =
+    domain.split(".");
 
-  if (labels.length < 2) {
+  if (
+    labels.length < 2
+  ) {
     return false;
   }
 
-  for (i = 0; i < labels.length; i += 1) {
+  for (
+    i = 0;
+    i < labels.length;
+    i += 1
+  ) {
     if (
       labels[i].length < 1 ||
       labels[i].length > 63 ||
-      !/^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/i.test(labels[i])
+      !/^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/i
+        .test(labels[i])
     ) {
       return false;
     }
@@ -600,18 +1031,34 @@ function isValidDomain(domain) {
 }
 
 function parseExclusions(value) {
-  var parts = value.split(/[,\n]+/);
+  var parts =
+    value.split(/[,\n]+/);
+
   var out = [];
   var seen = {};
   var i;
   var formatted;
 
-  for (i = 0; i < parts.length; i += 1) {
-    formatted = formatExclusion(parts[i]);
+  for (
+    i = 0;
+    i < parts.length;
+    i += 1
+  ) {
+    formatted =
+      formatExclusion(
+        parts[i]
+      );
 
-    if (formatted && !seen[formatted]) {
-      seen[formatted] = true;
-      out.push(formatted);
+    if (
+      formatted &&
+      !seen[formatted]
+    ) {
+      seen[formatted] =
+        true;
+
+      out.push(
+        formatted
+      );
     }
   }
 
@@ -619,15 +1066,20 @@ function parseExclusions(value) {
 }
 
 function formatExclusion(value) {
-  var term = trim(value);
+  var term =
+    trim(value);
+
   var clean;
 
   if (!term) {
     return "";
   }
 
-  if (term.charAt(0) === "-") {
-    term = term.substring(1);
+  if (
+    term.charAt(0) === "-"
+  ) {
+    term =
+      term.substring(1);
   }
 
   if (
@@ -637,18 +1089,37 @@ function formatExclusion(value) {
     return "-" + term;
   }
 
-  if (term.indexOf(" ") !== -1) {
-    clean = term.replace(/"/g, "");
-    return '-"' + clean + '"';
+  if (
+    term.indexOf(" ") !== -1
+  ) {
+    clean =
+      term.replace(
+        /"/g,
+        ""
+      );
+
+    return (
+      '-"' +
+      clean +
+      '"'
+    );
   }
 
   return "-" + term;
 }
 
-function applyExclusions(query, domain, custom) {
+function applyExclusions(
+  query,
+  domain,
+  custom
+) {
   var additions = [];
+
   var targetScoped =
-    query.indexOf("site:" + domain) !== -1;
+    query.indexOf(
+      "site:" + domain
+    ) !== -1;
+
   var i;
 
   if (
@@ -660,7 +1131,9 @@ function applyExclusions(query, domain, custom) {
       i < NOISE_EXCLUSIONS.length;
       i += 1
     ) {
-      additions.push(NOISE_EXCLUSIONS[i]);
+      additions.push(
+        NOISE_EXCLUSIONS[i]
+      );
     }
   }
 
@@ -668,82 +1141,154 @@ function applyExclusions(query, domain, custom) {
     targetScoped &&
     el.excludeWww.checked
   ) {
-    additions.push("-site:www." + domain);
+    additions.push(
+      "-site:www." +
+      domain
+    );
   }
 
-  for (i = 0; i < custom.length; i += 1) {
-    additions.push(custom[i]);
+  for (
+    i = 0;
+    i < custom.length;
+    i += 1
+  ) {
+    additions.push(
+      custom[i]
+    );
   }
 
-  if (additions.length > 0) {
-    return query + " " + additions.join(" ");
+  if (
+    additions.length > 0
+  ) {
+    return (
+      query +
+      " " +
+      additions.join(" ")
+    );
   }
 
   return query;
 }
 
 function generateQueries() {
-  var domains = parseDomains(el.targets.value);
-  var pack = getSelectedPack();
+  var domains =
+    parseDomains(
+      el.targets.value
+    );
+
+  var packs =
+    getSelectedPacks();
+
   var custom =
-    parseExclusions(el.exclusions.value);
+    parseExclusions(
+      el.exclusions.value
+    );
 
   var generated = [];
 
   var i;
   var j;
+  var k;
+  var pack;
   var q;
   var query;
   var truncated = false;
 
   clearMessage();
 
-  if (domains.length === 0) {
+  if (
+    domains.length === 0
+  ) {
     showMessage(
       "Enter at least one valid target domain, such as example.com."
     );
+
     return;
   }
 
-  if (!pack) {
+  if (
+    packs.length === 0
+  ) {
     showMessage(
-      "Choose a query pack before generating queries."
+      "Select at least one query pack."
     );
+
     return;
   }
 
-  for (i = 0; i < domains.length; i += 1) {
-    for (j = 0; j < pack.queries.length; j += 1) {
-      if (generated.length >= MAX_QUERIES) {
-        truncated = true;
-        break;
+  for (
+    i = 0;
+    i < domains.length;
+    i += 1
+  ) {
+    for (
+      j = 0;
+      j < packs.length;
+      j += 1
+    ) {
+      pack =
+        packs[j];
+
+      for (
+        k = 0;
+        k < pack.queries.length;
+        k += 1
+      ) {
+        if (
+          generated.length >=
+          MAX_QUERIES
+        ) {
+          truncated =
+            true;
+
+          break;
+        }
+
+        q =
+          pack.queries[k];
+
+        query =
+          applyTemplate(
+            q[2],
+            domains[i],
+            pack
+          );
+
+        query =
+          applyExclusions(
+            query,
+            domains[i],
+            custom
+          );
+
+        generated.push({
+          id:
+            "q" +
+            generated.length,
+
+          domain:
+            domains[i],
+
+          packId:
+            pack.id,
+
+          packName:
+            pack.name,
+
+          title:
+            q[0],
+
+          why:
+            q[1],
+
+          query:
+            query
+        });
       }
 
-      q = pack.queries[j];
-
-      query =
-        applyTemplate(
-          q[2],
-          domains[i],
-          pack
-        );
-
-      query =
-        applyExclusions(
-          query,
-          domains[i],
-          custom
-        );
-
-      generated.push({
-        id: "q" + generated.length,
-        domain: domains[i],
-        packId: pack.id,
-        packName: pack.name,
-        title: q[0],
-        why: q[1],
-        query: query
-      });
+      if (truncated) {
+        break;
+      }
     }
 
     if (truncated) {
@@ -751,13 +1296,25 @@ function generateQueries() {
     }
   }
 
-  state.generated = generated;
-  state.filtered = generated.slice(0);
+  state.generated =
+    generated;
 
-  el.resultSearch.value = "";
-  el.resultSearch.disabled = false;
-  el.copyAllBtn.disabled = false;
-  el.exportBtn.disabled = false;
+  state.filtered =
+    generated.slice(0);
+
+  el.resultSearch.value =
+    "";
+
+  el.resultSearch.disabled =
+    false;
+
+  el.copyAllBtn.disabled =
+    false;
+
+  el.exportBtn.disabled =
+    false;
+
+  closePackMenu();
 
   if (truncated) {
     showMessage(
@@ -772,8 +1329,9 @@ function generateQueries() {
 
 function filterResults() {
   var term =
-    trim(el.resultSearch.value)
-      .toLowerCase();
+    trim(
+      el.resultSearch.value
+    ).toLowerCase();
 
   var filtered = [];
   var i;
@@ -793,13 +1351,18 @@ function filterResults() {
     i < state.generated.length;
     i += 1
   ) {
-    item = state.generated[i];
+    item =
+      state.generated[i];
 
     searchable =
-      item.domain + " " +
-      item.packName + " " +
-      item.title + " " +
-      item.why + " " +
+      item.domain +
+      " " +
+      item.packName +
+      " " +
+      item.title +
+      " " +
+      item.why +
+      " " +
       item.query;
 
     if (
@@ -807,62 +1370,162 @@ function filterResults() {
         .toLowerCase()
         .indexOf(term) !== -1
     ) {
-      filtered.push(item);
+      filtered.push(
+        item
+      );
     }
   }
 
-  state.filtered = filtered;
+  state.filtered =
+    filtered;
+
   renderResults();
 }
 
+function groupResults(items) {
+  var groups = {};
+  var order = [];
+  var result = [];
+  var i;
+  var item;
+  var key;
+
+  for (
+    i = 0;
+    i < items.length;
+    i += 1
+  ) {
+    item =
+      items[i];
+
+    key =
+      item.packId;
+
+    if (!groups[key]) {
+      groups[key] = {
+        id:
+          key,
+
+        name:
+          item.packName,
+
+        items:
+          []
+      };
+
+      order.push(key);
+    }
+
+    groups[key].items.push(
+      item
+    );
+  }
+
+  for (
+    i = 0;
+    i < order.length;
+    i += 1
+  ) {
+    result.push(
+      groups[
+        order[i]
+      ]
+    );
+  }
+
+  return result;
+}
+
 function renderResults() {
+  var groups;
   var html = "";
   var i;
 
   el.resultCount.innerHTML =
     state.filtered.length;
 
-  if (state.generated.length === 0) {
-    el.emptyState.style.display = "block";
-    el.results.innerHTML = "";
+  if (
+    state.generated.length === 0
+  ) {
+    el.emptyState.style.display =
+      "block";
+
+    el.results.innerHTML =
+      "";
+
     return;
   }
 
-  el.emptyState.style.display = "none";
+  el.emptyState.style.display =
+    "none";
 
-  if (state.filtered.length === 0) {
+  if (
+    state.filtered.length === 0
+  ) {
     el.results.innerHTML =
       '<div class="empty">No matching queries.</div>';
+
     return;
   }
 
-  html += '<section class="group">';
-
-  html +=
-    '<h3 class="group-title">' +
-    escapeHtml(state.filtered[0].packName) +
-    ' (' +
-    state.filtered.length +
-    ')</h3>';
+  groups =
+    groupResults(
+      state.filtered
+    );
 
   for (
     i = 0;
-    i < state.filtered.length;
+    i < groups.length;
     i += 1
   ) {
-    html += renderQuery(state.filtered[i]);
+    html +=
+      renderGroup(
+        groups[i]
+      );
   }
 
-  html += "</section>";
-
-  el.results.innerHTML = html;
+  el.results.innerHTML =
+    html;
 
   bindQueryButtons();
 }
 
+function renderGroup(group) {
+  var html = "";
+  var i;
+
+  html +=
+    '<section class="group">';
+
+  html +=
+    '<h3 class="group-title">' +
+    escapeHtml(group.name) +
+    " (" +
+    group.items.length +
+    ")</h3>";
+
+  for (
+    i = 0;
+    i < group.items.length;
+    i += 1
+  ) {
+    html +=
+      renderQuery(
+        group.items[i]
+      );
+  }
+
+  html +=
+    "</section>";
+
+  return html;
+}
+
 function renderQuery(item) {
   var encoded =
-    encodeURIComponent(item.query);
+    encodeURIComponent(
+      item.query
+    );
 
   var google =
     "https://www.google.com/search?q=" +
@@ -878,33 +1541,45 @@ function renderQuery(item) {
 
   var html = "";
 
-  html += '<article class="query">';
+  html +=
+    '<article class="query">';
 
-  html += '<div class="query-header">';
+  html +=
+    '<div class="query-header">';
 
   html +=
     '<div class="query-title">' +
-    escapeHtml(item.title) +
+    escapeHtml(
+      item.title
+    ) +
     "</div>";
 
   html +=
     '<div class="query-target">' +
-    escapeHtml(item.domain) +
+    escapeHtml(
+      item.domain
+    ) +
     "</div>";
 
-  html += "</div>";
+  html +=
+    "</div>";
 
   html +=
     '<div class="query-why">' +
-    escapeHtml(item.why) +
+    escapeHtml(
+      item.why
+    ) +
     "</div>";
 
   html +=
     '<div class="query-code">' +
-    escapeHtml(item.query) +
+    escapeHtml(
+      item.query
+    ) +
     "</div>";
 
-  html += '<div class="query-actions">';
+  html +=
+    '<div class="query-actions">';
 
   html +=
     '<a href="' +
@@ -923,18 +1598,26 @@ function renderQuery(item) {
 
   html +=
     '<button type="button" class="copy-one" data-id="' +
-    escapeHtml(item.id) +
+    escapeHtml(
+      item.id
+    ) +
     '">Copy</button>';
 
-  html += "</div>";
-  html += "</article>";
+  html +=
+    "</div>";
+
+  html +=
+    "</article>";
 
   return html;
 }
 
 function bindQueryButtons() {
   var buttons =
-    el.results.getElementsByTagName("button");
+    el.results
+      .getElementsByTagName(
+        "button"
+      );
 
   var i;
 
@@ -944,19 +1627,25 @@ function bindQueryButtons() {
     i += 1
   ) {
     if (
-      buttons[i].className === "copy-one"
+      buttons[i].className ===
+      "copy-one"
     ) {
-      buttons[i].onclick = function () {
-        var id =
-          this.getAttribute("data-id");
+      buttons[i].onclick =
+        function () {
+          var id =
+            this.getAttribute(
+              "data-id"
+            );
 
-        var item =
-          findById(id);
+          var item =
+            findById(id);
 
-        if (item) {
-          copyText(item.query);
-        }
-      };
+          if (item) {
+            copyText(
+              item.query
+            );
+          }
+        };
     }
   }
 }
@@ -981,7 +1670,11 @@ function findById(id) {
 
 function buildExport(items) {
   var lines = [];
+  var groups;
   var i;
+  var j;
+  var group;
+  var item;
 
   lines.push(
     "DORKER - EXTERNAL ASSESSMENT OSINT"
@@ -992,17 +1685,11 @@ function buildExport(items) {
   );
 
   lines.push("");
+
   lines.push(
     "Generated: " +
     new Date().toString()
   );
-
-  if (items.length > 0) {
-    lines.push(
-      "Query Pack: " +
-      items[0].packName
-    );
-  }
 
   lines.push(
     "Queries: " +
@@ -1010,32 +1697,60 @@ function buildExport(items) {
   );
 
   lines.push("");
+
   lines.push(
     "Authorized assessment use only."
   );
+
   lines.push("");
+
+  groups =
+    groupResults(items);
 
   for (
     i = 0;
-    i < items.length;
+    i < groups.length;
     i += 1
   ) {
-    lines.push(items[i].title);
-    lines.push(
-      "Target: " +
-      items[i].domain
-    );
-
-    lines.push(
-      "Purpose: " +
-      items[i].why
-    );
-
-    lines.push(
-      items[i].query
-    );
+    group =
+      groups[i];
 
     lines.push("");
+    lines.push(
+      "[ " +
+      group.name.toUpperCase() +
+      " ]"
+    );
+    lines.push("");
+
+    for (
+      j = 0;
+      j < group.items.length;
+      j += 1
+    ) {
+      item =
+        group.items[j];
+
+      lines.push(
+        item.title
+      );
+
+      lines.push(
+        "Target: " +
+        item.domain
+      );
+
+      lines.push(
+        "Purpose: " +
+        item.why
+      );
+
+      lines.push(
+        item.query
+      );
+
+      lines.push("");
+    }
   }
 
   return lines.join("\n");
@@ -1049,7 +1764,9 @@ function copyAllVisible() {
   }
 
   copyText(
-    buildExport(state.filtered)
+    buildExport(
+      state.filtered
+    )
   );
 }
 
@@ -1079,28 +1796,43 @@ function copyText(text) {
 
 function fallbackCopy(text) {
   var box =
-    document.createElement("textarea");
+    document.createElement(
+      "textarea"
+    );
 
   var ok = false;
 
-  box.value = text;
-  box.style.position = "fixed";
-  box.style.left = "-9999px";
-  box.style.top = "0";
+  box.value =
+    text;
 
-  document.body.appendChild(box);
+  box.style.position =
+    "fixed";
+
+  box.style.left =
+    "-9999px";
+
+  box.style.top =
+    "0";
+
+  document.body.appendChild(
+    box
+  );
 
   box.focus();
   box.select();
 
   try {
     ok =
-      document.execCommand("copy");
+      document.execCommand(
+        "copy"
+      );
   } catch (err) {
     ok = false;
   }
 
-  document.body.removeChild(box);
+  document.body.removeChild(
+    box
+  );
 
   if (ok) {
     showMessage(
@@ -1127,66 +1859,121 @@ function exportVisible() {
   }
 
   text =
-    buildExport(state.filtered);
+    buildExport(
+      state.filtered
+    );
 
   blob =
     new Blob(
       [text],
       {
-        type: "text/plain;charset=utf-8"
+        type:
+          "text/plain;charset=utf-8"
       }
     );
 
   url =
-    window.URL.createObjectURL(blob);
+    window.URL
+      .createObjectURL(
+        blob
+      );
 
   fileName =
     "dorker-queries-" +
-    formatDate(new Date()) +
+    formatDate(
+      new Date()
+    ) +
     ".txt";
 
   a =
-    document.createElement("a");
+    document.createElement(
+      "a"
+    );
 
-  a.href = url;
-  a.download = fileName;
+  a.href =
+    url;
 
-  document.body.appendChild(a);
+  a.download =
+    fileName;
+
+  document.body.appendChild(
+    a
+  );
+
   a.click();
-  document.body.removeChild(a);
+
+  document.body.removeChild(
+    a
+  );
 
   window.setTimeout(
     function () {
-      window.URL.revokeObjectURL(url);
+      window.URL
+        .revokeObjectURL(
+          url
+        );
     },
     1000
   );
 }
 
 function resetApp() {
-  el.targets.value = "";
-  el.queryPack.value = "";
-  el.exclusions.value = "";
+  var inputs =
+    getPackCheckboxes();
 
-  el.reduceNoise.checked = false;
-  el.excludeWww.checked = false;
+  var i;
 
-  el.resultSearch.value = "";
+  el.targets.value =
+    "";
 
-  state.generated = [];
-  state.filtered = [];
+  el.exclusions.value =
+    "";
 
-  el.resultSearch.disabled = true;
-  el.copyAllBtn.disabled = true;
-  el.exportBtn.disabled = true;
+  el.reduceNoise.checked =
+    false;
 
-  el.resultCount.innerHTML = "0";
+  el.excludeWww.checked =
+    false;
 
-  el.emptyState.style.display = "block";
-  el.results.innerHTML = "";
+  el.resultSearch.value =
+    "";
 
+  for (
+    i = 0;
+    i < inputs.length;
+    i += 1
+  ) {
+    inputs[i].checked =
+      false;
+  }
+
+  state.generated =
+    [];
+
+  state.filtered =
+    [];
+
+  el.resultSearch.disabled =
+    true;
+
+  el.copyAllBtn.disabled =
+    true;
+
+  el.exportBtn.disabled =
+    true;
+
+  el.resultCount.innerHTML =
+    "0";
+
+  el.emptyState.style.display =
+    "block";
+
+  el.results.innerHTML =
+    "";
+
+  closePackMenu();
   clearMessage();
-  updatePackDescription();
+  updatePackSelectionDisplay();
 }
 
 function showMessage(text) {
@@ -1198,14 +1985,19 @@ function showMessage(text) {
 }
 
 function clearMessage() {
-  el.message.innerHTML = "";
+  el.message.innerHTML =
+    "";
+
   el.message.style.display =
     "none";
 }
 
 function trim(value) {
   return String(value)
-    .replace(/^\s+|\s+$/g, "");
+    .replace(
+      /^\s+|\s+$/g,
+      ""
+    );
 }
 
 function formatDate(date) {
@@ -1218,12 +2010,18 @@ function formatDate(date) {
   var day =
     date.getDate();
 
-  if (month < 10) {
-    month = "0" + month;
+  if (
+    month < 10
+  ) {
+    month =
+      "0" + month;
   }
 
-  if (day < 10) {
-    day = "0" + day;
+  if (
+    day < 10
+  ) {
+    day =
+      "0" + day;
   }
 
   return (
@@ -1245,7 +2043,8 @@ function escapeHtml(value) {
 }
 
 if (
-  document.readyState === "loading"
+  document.readyState ===
+  "loading"
 ) {
   document.addEventListener(
     "DOMContentLoaded",
