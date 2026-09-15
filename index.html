@@ -2,8 +2,17 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Dorker - passive OSINT query builder for authorized external assessments.">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta
+    name="description"
+    content="Dorker - passive OSINT query builder for authorized external assessments."
+  >
+
   <title>Dorker - External Assessment OSINT</title>
 
   <style>
@@ -82,7 +91,8 @@
     }
 
     textarea,
-    input[type="text"] {
+    input[type="text"],
+    select {
       width: 100%;
       background: #0d0d0d;
       color: #eee;
@@ -98,8 +108,13 @@
     }
 
     textarea:focus,
-    input[type="text"]:focus {
+    input[type="text"]:focus,
+    select:focus {
       border-color: #777;
+    }
+
+    select {
+      cursor: pointer;
     }
 
     .field {
@@ -110,39 +125,6 @@
       margin-top: 5px;
       color: #888;
       font-size: 12px;
-    }
-
-    .module-list {
-      border: 1px solid #333;
-      max-height: 370px;
-      overflow-y: auto;
-      background: #121212;
-    }
-
-    .module-row {
-      display: flex;
-      gap: 8px;
-      align-items: flex-start;
-      padding: 9px 10px;
-      border-bottom: 1px solid #292929;
-    }
-
-    .module-row:last-child {
-      border-bottom: 0;
-    }
-
-    .module-row input {
-      margin-top: 3px;
-    }
-
-    .module-name {
-      font-weight: 700;
-    }
-
-    .module-desc {
-      color: #888;
-      font-size: 12px;
-      margin-top: 2px;
     }
 
     .option {
@@ -331,14 +313,19 @@
   <header>
     <div class="wrap">
       <h1>Dorker</h1>
-      <div class="subtitle">Passive OSINT query builder for authorized external assessments.</div>
+
+      <div class="subtitle">
+        Passive OSINT query builder for authorized external assessments.
+      </div>
     </div>
   </header>
 
   <main class="wrap">
     <div class="notice">
-      Dorker builds search-engine queries only. It does not scan, crawl, authenticate to, or exploit target systems.
-      Treat results as leads and validate scope before interacting with discovered assets.
+      Dorker builds search-engine queries only. It does not scan,
+      crawl, authenticate to, or exploit target systems.
+      Treat results as leads and validate scope before interacting
+      with discovered assets.
     </div>
 
     <div class="layout">
@@ -347,38 +334,97 @@
 
         <div class="panel-body">
           <div class="field">
-            <label class="heading" for="targets">Target domain(s)</label>
-            <textarea id="targets" placeholder="example.com&#10;example.org"></textarea>
-            <div class="help">One per line. Full URLs are okay; Dorker will normalize them.</div>
+            <label
+              class="heading"
+              for="targets"
+            >
+              Target domain(s)
+            </label>
+
+            <textarea
+              id="targets"
+              placeholder="example.com&#10;example.org"
+            ></textarea>
+
+            <div class="help">
+              One per line. Full URLs are okay; Dorker will normalize them.
+            </div>
           </div>
 
           <div class="field">
-            <label class="heading">Modules</label>
-            <div id="moduleList" class="module-list"></div>
-            <div class="help" id="moduleSummary"></div>
+            <label
+              class="heading"
+              for="queryPack"
+            >
+              Query pack
+            </label>
+
+            <select id="queryPack">
+              <option value="">
+                Choose a query pack...
+              </option>
+            </select>
+
+            <div
+              class="help"
+              id="packDescription"
+            >
+              Select a query pack to see what it searches for.
+            </div>
           </div>
 
           <div class="field">
-            <label class="heading" for="exclusions">Custom exclusions</label>
-            <input id="exclusions" type="text" placeholder="blog, careers, press">
-            <div class="help">Optional. Separate with commas.</div>
+            <label
+              class="heading"
+              for="exclusions"
+            >
+              Custom exclusions
+            </label>
+
+            <input
+              id="exclusions"
+              type="text"
+              placeholder="blog, careers, press"
+            >
+
+            <div class="help">
+              Optional. Separate with commas.
+            </div>
           </div>
 
           <div class="field">
             <label class="option">
-              <input id="reduceNoise" type="checkbox">
+              <input
+                id="reduceNoise"
+                type="checkbox"
+              >
               Reduce common marketing noise
             </label>
 
             <label class="option">
-              <input id="excludeWww" type="checkbox">
+              <input
+                id="excludeWww"
+                type="checkbox"
+              >
               De-emphasize www host
             </label>
           </div>
 
           <div class="buttons">
-            <button id="generateBtn" class="primary" type="button">Generate</button>
-            <button id="resetBtn" type="button">Reset</button>
+            <button
+              id="generateBtn"
+              class="primary"
+              type="button"
+            >
+              Generate
+            </button>
+
+            <button
+              id="resetBtn"
+              type="button"
+            >
+              Reset
+            </button>
           </div>
         </div>
       </section>
@@ -387,16 +433,42 @@
         <h2>Queries</h2>
 
         <div class="results-toolbar">
-          <div class="count"><span id="resultCount">0</span> shown</div>
-          <input id="resultSearch" type="text" placeholder="Filter results" disabled>
-          <button id="copyAllBtn" type="button" disabled>Copy all</button>
-          <button id="exportBtn" type="button" disabled>Export .txt</button>
+          <div class="count">
+            <span id="resultCount">0</span>
+            shown
+          </div>
+
+          <input
+            id="resultSearch"
+            type="text"
+            placeholder="Filter results"
+            disabled
+          >
+
+          <button
+            id="copyAllBtn"
+            type="button"
+            disabled
+          >
+            Copy all
+          </button>
+
+          <button
+            id="exportBtn"
+            type="button"
+            disabled
+          >
+            Export .txt
+          </button>
         </div>
 
         <div id="message"></div>
 
-        <div id="emptyState" class="empty">
-          Enter a target, choose your modules, and click Generate.
+        <div
+          id="emptyState"
+          class="empty"
+        >
+          Enter a target, choose a query pack, and click Generate.
         </div>
 
         <div id="results"></div>
@@ -405,7 +477,8 @@
   </main>
 
   <footer class="wrap">
-    Authorized assessment use only. Search-engine syntax and indexing behavior vary by provider.
+    Authorized assessment use only.
+    Search-engine syntax and indexing behavior vary by provider.
   </footer>
 
   <script src="app.js"></script>
