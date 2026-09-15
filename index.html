@@ -14,6 +14,7 @@
 <main><div class="intro"><h1>A better starting point for search.</h1><p>Turn domains, terms, and file types into ready-to-run search queries.</p></div>
 <div class="layout"><section class="panel"><h2><span class="step">01</span>Define your search</h2>
 <form id="builder">
+<label for="preset">Assessment template</label><select id="preset" aria-describedby="preset-help"><option value="">Custom search</option><option value="internal">Internal document exposure</option><option value="directory">Directory listings</option><option value="technical">Technical documentation</option><option value="financial">Financial & procurement documents</option><option value="policies">Policies & compliance</option></select><p id="preset-help" class="hint">Select a starting point for an authorized external assessment. Templates replace terms and file types; your domains stay unchanged.</p>
 <label for="domains">Domains</label><textarea id="domains" placeholder="example.com, example.org" required></textarea><p class="hint">Separate domains with commas or new lines. URLs work too.</p>
 <label for="terms">Search terms</label><textarea id="terms" placeholder="annual report, documentation"></textarea><p class="hint">One exact phrase per comma or line. Leave blank for any term.</p>
 <label for="types">File types</label><input id="types" value="pdf, docx, xlsx" placeholder="pdf, docx, xlsx"><p class="hint">Leave blank to search all file types.</p>

@@ -1,5 +1,12 @@
 'use strict';
 (function () {
+  const presets = {
+    internal: { terms: 'confidential, internal use only, not for distribution, proprietary', types: 'pdf, doc, docx, xls, xlsx, ppt, pptx', hint: 'Find indexed documents with internal-use labels. A matching label alone does not establish a data exposure.' },
+    directory: { terms: 'index of /, parent directory, directory listing', types: '', hint: 'Find pages that resemble directory listings. Searches cover all file types.' },
+    technical: { terms: 'architecture, network diagram, deployment guide, API documentation, runbook', types: 'pdf, docx, pptx, txt', hint: 'Review indexed technical documentation for information that should not be public.' },
+    financial: { terms: 'budget, forecast, purchase order, invoice, pricing proposal', types: 'pdf, xls, xlsx, docx', hint: 'Review financial and procurement documents. Some matches may be intentionally public.' },
+    policies: { terms: 'information security policy, incident response plan, business continuity, data retention', types: 'pdf, doc, docx', hint: 'Review indexed policy and compliance documents for intended publication.' }
+  };
   const split = value => [...new Set(value.split(/[,\n]+/).map(x => x.trim()).filter(Boolean))];
   function buildQueries(domainsText, termsText, typesText, mode) {
     const domains = [...new Set(split(domainsText).map(value => {
@@ -22,11 +29,21 @@
     if (mode === 'granular') return domains.flatMap(d => (terms.length ? terms : ['']).flatMap(t => (types.length ? types : ['']).map(f => join(['site:' + d, f && 'filetype:' + f, t && '"' + t + '"']))));
     return domains.map(d => join(['site:' + d, group(types.map(f => 'filetype:' + f)), group(terms.map(t => '"' + t + '"'))]));
   }
-  if (typeof module !== 'undefined' && module.exports) module.exports = { buildQueries };
+  if (typeof module !== 'undefined' && module.exports) module.exports = { buildQueries, presets };
   if (typeof document === 'undefined') return;
   const $ = id => document.getElementById(id);
   let queries = [];
   const empty = $('results').firstElementChild.cloneNode(true);
+  const presetHelp = $('preset-help').textContent;
+  $('preset').addEventListener('change', () => {
+    const preset = presets[$('preset').value];
+    if (preset) {
+      $('terms').value = preset.terms; $('types').value = preset.types;
+      $('preset-help').textContent = preset.hint + ' Terms and file types remain editable.';
+    } else { $('preset-help').textContent = presetHelp; }
+    queries = []; render(); $('error').textContent = '';
+    $('status').textContent = preset ? 'Template applied. Review your domains and generate queries.' : '';
+  });
   function render() {
     $('results').replaceChildren();
     $('count').textContent = queries.length + (queries.length === 1 ? ' QUERY' : ' QUERIES');
@@ -50,7 +67,8 @@
       render(); $('status').textContent = 'Ready. Choose a search engine beside any query.';
     } catch (error) { queries = []; render(); $('error').textContent = error.message; }
   });
-  $('builder').addEventListener('input', () => {
+  $('builder').addEventListener('input', event => {
+    if (['terms', 'types'].includes(event.target.id)) { $('preset').value = ''; $('preset-help').textContent = presetHelp; }
     if (queries.length) { queries = []; render(); $('status').textContent = 'Inputs changed. Generate queries to update the preview.'; }
     $('error').textContent = '';
   });

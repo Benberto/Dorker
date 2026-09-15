@@ -15,7 +15,13 @@ Open `index.html` in a browser. Enter domains, optional exact phrases, and optio
 
 No backend, API key, dependencies, automated searching, or tracking. Search links send the selected query to the chosen search engine. Clipboard access may require HTTPS; text downloads also work locally.
 
-## GitHub Pages
+## Assessment templates
+
+Choose a preset for internal document exposure, directory listings, technical documentation, financial and procurement documents, or policies and compliance. Each preset replaces terms and file types while preserving domains and query mode. Editing its terms or file types switches the selector to Custom search. Nothing searches automatically.
+
+Use domains within the authorized assessment scope. These are starting points for reviewing indexed content, not evidence of a vulnerability or a complete external assessment; search engines may omit content and results can be intentionally public.
+
+## GitHub Pages setup
 
 Place `index.html` and `app.js` at the repository root. In the repository's **Settings → Pages**, choose **Deploy from a branch**, select the branch containing these files, and choose **/(root)**.
 
