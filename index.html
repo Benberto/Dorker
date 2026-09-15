@@ -1,1175 +1,413 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  />
-
-  <meta
-    name="description"
-    content="Dorker is a client-side External Assessment OSINT query builder for authorized security assessments."
-  />
-
-  <title>Dorker | External Assessment OSINT Query Builder</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Dorker - passive OSINT query builder for authorized external assessments.">
+  <title>Dorker - External Assessment OSINT</title>
 
   <style>
-    :root {
-      --bg: #070a0f;
-      --panel: #0d1118;
-      --panel-2: #111722;
-      --panel-3: #151d2a;
-      --border: #222c3a;
-      --border-light: #2b3748;
-
-      --text: #edf3fa;
-      --muted: #8d9aab;
-      --muted-2: #647184;
-
-      --blue: #35a7ff;
-      --blue-2: #1889e6;
-      --cyan: #54e1ff;
-      --green: #45d483;
-      --orange: #ffb454;
-      --red: #ff657a;
-
-      --shadow: 0 16px 60px rgba(0, 0, 0, 0.25);
-      --radius: 12px;
-    }
-
     * {
       box-sizing: border-box;
     }
 
-    html {
-      scroll-behavior: smooth;
-    }
-
     body {
       margin: 0;
-      min-height: 100vh;
-      background:
-        radial-gradient(
-          circle at 20% 0%,
-          rgba(53, 167, 255, 0.08),
-          transparent 28%
-        ),
-        radial-gradient(
-          circle at 90% 10%,
-          rgba(84, 225, 255, 0.04),
-          transparent 24%
-        ),
-        var(--bg);
-
-      color: var(--text);
-
-      font-family:
-        Inter,
-        ui-sans-serif,
-        system-ui,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        sans-serif;
-
-      line-height: 1.5;
+      background: #111;
+      color: #e8e8e8;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 14px;
+      line-height: 1.45;
     }
 
-    button,
-    input,
-    textarea {
-      font: inherit;
-    }
-
-    button {
-      cursor: pointer;
-    }
-
-    a {
-      color: inherit;
-    }
-
-    .header {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-      background: rgba(7, 10, 15, 0.88);
-      backdrop-filter: blur(14px);
-    }
-
-    .header-inner {
-      max-width: 1500px;
+    .wrap {
+      width: 94%;
+      max-width: 1200px;
       margin: 0 auto;
-      padding: 16px 24px;
+    }
 
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+    header {
+      border-bottom: 1px solid #333;
+      padding: 22px 0 18px;
+      margin-bottom: 24px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 28px;
+      font-weight: 700;
+    }
+
+    .subtitle {
+      margin-top: 5px;
+      color: #aaa;
+    }
+
+    .notice {
+      border: 1px solid #444;
+      background: #181818;
+      padding: 10px 12px;
+      margin-bottom: 20px;
+      color: #bbb;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 330px 1fr;
       gap: 20px;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 13px;
-    }
-
-    .brand-icon {
-      width: 39px;
-      height: 39px;
-      border-radius: 10px;
-
-      display: grid;
-      place-items: center;
-
-      color: #061019;
-      font-weight: 900;
-      font-size: 18px;
-
-      background:
-        linear-gradient(
-          135deg,
-          var(--cyan),
-          var(--blue)
-        );
-
-      box-shadow:
-        0 0 30px rgba(53, 167, 255, 0.20);
-    }
-
-    .brand-name {
-      margin: 0;
-      font-size: 19px;
-      font-weight: 800;
-      letter-spacing: 0.04em;
-    }
-
-    .brand-subtitle {
-      margin-top: 1px;
-
-      color: var(--muted);
-      font-size: 12px;
-      letter-spacing: 0.04em;
-    }
-
-    .version {
-      padding: 5px 9px;
-      border: 1px solid rgba(53, 167, 255, 0.25);
-      border-radius: 999px;
-
-      color: var(--cyan);
-      background: rgba(53, 167, 255, 0.08);
-
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 0.07em;
-    }
-
-    .hero {
-      max-width: 1500px;
-      margin: 0 auto;
-      padding: 42px 24px 27px;
-    }
-
-    .eyebrow {
-      margin-bottom: 10px;
-
-      color: var(--cyan);
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-    }
-
-    .hero h1 {
-      max-width: 900px;
-      margin: 0;
-
-      font-size: clamp(32px, 5vw, 54px);
-      line-height: 1.04;
-      letter-spacing: -0.035em;
-    }
-
-    .hero-text {
-      max-width: 780px;
-      margin: 17px 0 0;
-
-      color: var(--muted);
-      font-size: 16px;
-      line-height: 1.7;
-    }
-
-    .shell {
-      max-width: 1500px;
-      margin: 0 auto;
-      padding: 0 24px 60px;
-
-      display: grid;
-      grid-template-columns: minmax(300px, 390px) minmax(0, 1fr);
-      gap: 22px;
       align-items: start;
     }
 
     .panel {
-      overflow: hidden;
-
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-
-      background:
-        linear-gradient(
-          180deg,
-          rgba(255, 255, 255, 0.015),
-          transparent
-        ),
-        var(--panel);
-
-      box-shadow: var(--shadow);
+      border: 1px solid #333;
+      background: #171717;
     }
 
-    .controls {
-      position: sticky;
-      top: 90px;
-    }
-
-    .panel-header {
-      padding: 18px 20px;
-      border-bottom: 1px solid var(--border);
-
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 14px;
-    }
-
-    .panel-title {
+    .panel h2 {
+      font-size: 15px;
       margin: 0;
-
-      font-size: 13px;
-      font-weight: 800;
-      letter-spacing: 0.09em;
-      text-transform: uppercase;
+      padding: 12px 14px;
+      border-bottom: 1px solid #333;
+      background: #1d1d1d;
     }
 
     .panel-body {
-      padding: 20px;
+      padding: 14px;
     }
 
-    .field {
-      margin-bottom: 22px;
-    }
-
-    .label-row {
-      margin-bottom: 8px;
-
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-    }
-
-    label,
-    .field-label {
-      color: #c8d3df;
-
-      font-size: 12px;
-      font-weight: 750;
-      letter-spacing: 0.045em;
-      text-transform: uppercase;
-    }
-
-    .hint {
-      color: var(--muted-2);
-      font-size: 11px;
-      text-transform: none;
-      letter-spacing: normal;
+    label.heading {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 700;
     }
 
     textarea,
     input[type="text"] {
       width: 100%;
+      background: #0d0d0d;
+      color: #eee;
+      border: 1px solid #444;
+      padding: 9px;
       outline: none;
-
-      border: 1px solid var(--border-light);
-      border-radius: 9px;
-
-      color: var(--text);
-      background: #090d13;
-
-      transition:
-        border-color 0.18s ease,
-        box-shadow 0.18s ease;
     }
 
     textarea {
-      min-height: 102px;
-      padding: 12px 13px;
+      min-height: 92px;
       resize: vertical;
-
-      font-family:
-        "SFMono-Regular",
-        Consolas,
-        "Liberation Mono",
-        monospace;
-
-      font-size: 13px;
-      line-height: 1.6;
-    }
-
-    input[type="text"] {
-      padding: 11px 13px;
-      font-size: 13px;
+      font-family: Consolas, Monaco, monospace;
     }
 
     textarea:focus,
     input[type="text"]:focus {
-      border-color: rgba(53, 167, 255, 0.8);
+      border-color: #777;
+    }
 
-      box-shadow:
-        0 0 0 3px rgba(53, 167, 255, 0.09);
+    .field {
+      margin-bottom: 17px;
+    }
+
+    .help {
+      margin-top: 5px;
+      color: #888;
+      font-size: 12px;
     }
 
     .module-list {
-      display: grid;
-      gap: 7px;
+      border: 1px solid #333;
+      max-height: 370px;
+      overflow-y: auto;
+      background: #121212;
     }
 
-    .module-option {
-      padding: 10px 11px;
-
-      border: 1px solid transparent;
-      border-radius: 8px;
-
+    .module-row {
       display: flex;
+      gap: 8px;
       align-items: flex-start;
-      gap: 10px;
-
-      background: rgba(255, 255, 255, 0.018);
-
-      transition:
-        border-color 0.15s ease,
-        background 0.15s ease;
+      padding: 9px 10px;
+      border-bottom: 1px solid #292929;
     }
 
-    .module-option:hover {
-      border-color: var(--border-light);
-      background: rgba(255, 255, 255, 0.028);
+    .module-row:last-child {
+      border-bottom: 0;
     }
 
-    .module-option input {
-      width: 15px;
-      height: 15px;
-      margin-top: 2px;
-      accent-color: var(--blue);
-    }
-
-    .module-copy {
-      flex: 1;
-      min-width: 0;
+    .module-row input {
+      margin-top: 3px;
     }
 
     .module-name {
-      color: #dfe8f2;
-      font-size: 13px;
       font-weight: 700;
     }
 
-    .module-description {
+    .module-desc {
+      color: #888;
+      font-size: 12px;
       margin-top: 2px;
-
-      color: var(--muted-2);
-      font-size: 11px;
-      line-height: 1.45;
     }
 
-    .module-count {
-      padding: 2px 6px;
-
-      border-radius: 5px;
-
-      color: var(--muted);
-      background: #080b10;
-
-      font-family:
-        "SFMono-Regular",
-        Consolas,
-        monospace;
-
-      font-size: 10px;
+    .option {
+      display: block;
+      margin: 8px 0;
+      color: #ccc;
     }
 
-    .inline-options {
-      display: grid;
-      gap: 9px;
-    }
-
-    .toggle {
+    .buttons {
       display: flex;
-      align-items: flex-start;
-      gap: 9px;
-
-      color: #bdc9d7;
-      font-size: 12px;
-      line-height: 1.45;
-      text-transform: none;
-      letter-spacing: normal;
+      gap: 8px;
+      flex-wrap: wrap;
     }
 
-    .toggle input {
-      margin-top: 2px;
-      accent-color: var(--blue);
+    button {
+      border: 1px solid #555;
+      background: #262626;
+      color: #eee;
+      padding: 9px 13px;
+      cursor: pointer;
     }
 
-    .button-row {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 9px;
+    button:hover {
+      background: #303030;
     }
 
-    .btn {
-      min-height: 43px;
-      padding: 10px 15px;
-
-      border: 1px solid var(--border-light);
-      border-radius: 9px;
-
-      color: #dce7f1;
-      background: var(--panel-3);
-
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: 0.045em;
-      text-transform: uppercase;
-
-      transition:
-        transform 0.12s ease,
-        background 0.15s ease,
-        border-color 0.15s ease;
+    button.primary {
+      background: #e8e8e8;
+      color: #111;
+      border-color: #e8e8e8;
+      font-weight: 700;
     }
 
-    .btn:hover {
-      border-color: #3a4b61;
-      background: #192331;
+    button.primary:hover {
+      background: #fff;
     }
 
-    .btn:active {
-      transform: translateY(1px);
-    }
-
-    .btn-primary {
-      border-color: rgba(53, 167, 255, 0.5);
-
-      color: #04101a;
-
-      background:
-        linear-gradient(
-          135deg,
-          var(--cyan),
-          var(--blue)
-        );
-    }
-
-    .btn-primary:hover {
-      border-color: var(--cyan);
-
-      background:
-        linear-gradient(
-          135deg,
-          #75eaff,
-          #49b2ff
-        );
-    }
-
-    .btn-small {
-      min-height: 35px;
-      padding: 8px 11px;
-
-      font-size: 10px;
-    }
-
-    .results-panel {
-      min-height: 630px;
+    button:disabled {
+      opacity: 0.45;
+      cursor: default;
     }
 
     .results-toolbar {
-      padding: 15px 18px;
-      border-bottom: 1px solid var(--border);
-
       display: flex;
-      flex-wrap: wrap;
+      gap: 8px;
       align-items: center;
-      gap: 10px;
+      padding: 12px 14px;
+      border-bottom: 1px solid #333;
+      flex-wrap: wrap;
     }
 
-    .results-summary {
+    .count {
+      font-weight: 700;
       margin-right: auto;
     }
 
-    .result-count {
-      font-size: 19px;
-      font-weight: 850;
-      letter-spacing: -0.02em;
+    .results-toolbar input {
+      width: 260px;
+      max-width: 100%;
     }
 
-    .result-count span {
-      color: var(--cyan);
-    }
-
-    .result-subtitle {
-      margin-top: 1px;
-
-      color: var(--muted);
-      font-size: 11px;
-    }
-
-    .search-wrap {
-      min-width: 210px;
-      width: min(320px, 100%);
-    }
-
-    #resultSearch {
-      padding: 9px 12px;
-    }
-
-    .toolbar-actions {
-      display: flex;
-      gap: 7px;
-    }
-
-    .notice {
+    #message {
       display: none;
-      margin: 16px 18px 0;
-      padding: 11px 13px;
-
-      border: 1px solid rgba(255, 180, 84, 0.28);
-      border-radius: 8px;
-
-      color: #e8c18d;
-      background: rgba(255, 180, 84, 0.06);
-
-      font-size: 12px;
+      margin: 14px;
+      padding: 10px;
+      border: 1px solid #665c33;
+      background: #201e14;
+      color: #ddd1a4;
     }
 
-    .notice.visible {
-      display: block;
-    }
-
-    .empty-state {
-      padding: 90px 25px;
-
-      display: grid;
-      place-items: center;
-
+    .empty {
+      padding: 55px 20px;
+      color: #888;
       text-align: center;
     }
 
-    .empty-icon {
-      width: 62px;
-      height: 62px;
-      margin-bottom: 18px;
-
-      border: 1px solid var(--border-light);
-      border-radius: 18px;
-
-      display: grid;
-      place-items: center;
-
-      color: var(--cyan);
-      background: var(--panel-2);
-
-      font-family:
-        "SFMono-Regular",
-        Consolas,
-        monospace;
-
-      font-size: 21px;
-      font-weight: 700;
+    .group {
+      border-top: 1px solid #333;
     }
 
-    .empty-state h2 {
-      margin: 0 0 8px;
-
-      color: #dce5ee;
-      font-size: 19px;
+    .group:first-child {
+      border-top: 0;
     }
 
-    .empty-state p {
-      max-width: 490px;
+    .group-title {
       margin: 0;
-
-      color: var(--muted);
+      padding: 10px 14px;
+      background: #1b1b1b;
       font-size: 13px;
-      line-height: 1.65;
-    }
-
-    .results {
-      padding: 18px;
-    }
-
-    .result-group {
-      margin-bottom: 25px;
-    }
-
-    .group-heading {
-      margin-bottom: 10px;
-      padding: 0 2px 8px;
-
-      border-bottom: 1px solid var(--border);
-
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 15px;
-    }
-
-    .group-name {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-
-      color: #dce6f0;
-      font-size: 12px;
-      font-weight: 850;
-      letter-spacing: 0.08em;
       text-transform: uppercase;
+      letter-spacing: 0.03em;
     }
 
-    .group-dot {
-      width: 7px;
-      height: 7px;
-
-      border-radius: 50%;
-
-      background: var(--cyan);
-      box-shadow: 0 0 12px rgba(84, 225, 255, 0.5);
+    .query {
+      padding: 13px 14px;
+      border-top: 1px solid #292929;
     }
 
-    .group-count {
-      color: var(--muted-2);
-
-      font-family:
-        "SFMono-Regular",
-        Consolas,
-        monospace;
-
-      font-size: 10px;
+    .query:first-of-type {
+      border-top: 0;
     }
 
-    .query-list {
-      display: grid;
-      gap: 9px;
-    }
-
-    .query-card {
-      overflow: hidden;
-
-      border: 1px solid var(--border);
-      border-radius: 9px;
-
-      background: #0a0e14;
-
-      transition:
-        border-color 0.15s ease,
-        transform 0.15s ease;
-    }
-
-    .query-card:hover {
-      border-color: #314156;
-    }
-
-    .query-top {
-      padding: 13px 14px 10px;
-    }
-
-    .query-meta {
-      margin-bottom: 7px;
-
+    .query-header {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      gap: 10px;
+      gap: 12px;
+      margin-bottom: 5px;
     }
 
     .query-title {
-      color: #dde7f0;
-      font-size: 13px;
-      font-weight: 760;
+      font-weight: 700;
     }
 
-    .target-badge {
-      max-width: 190px;
-      overflow: hidden;
-
-      padding: 3px 7px;
-
-      border: 1px solid rgba(53, 167, 255, 0.18);
-      border-radius: 999px;
-
-      color: #8ccfff;
-      background: rgba(53, 167, 255, 0.06);
-
-      font-family:
-        "SFMono-Regular",
-        Consolas,
-        monospace;
-
-      font-size: 9px;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+    .query-target {
+      color: #888;
+      font-family: Consolas, Monaco, monospace;
+      font-size: 12px;
     }
 
     .query-why {
-      color: var(--muted);
-      font-size: 11px;
-      line-height: 1.55;
+      color: #999;
+      font-size: 12px;
+      margin-bottom: 8px;
     }
 
     .query-code {
-      margin-top: 10px;
-      padding: 11px 12px;
-
-      overflow-x: auto;
-
-      border: 1px solid rgba(255, 255, 255, 0.045);
-      border-radius: 7px;
-
-      color: #b9e3ff;
-      background: #05080c;
-
-      font-family:
-        "SFMono-Regular",
-        Consolas,
-        "Liberation Mono",
-        monospace;
-
-      font-size: 11px;
-      line-height: 1.55;
+      border: 1px solid #333;
+      background: #0b0b0b;
+      color: #d8d8d8;
+      padding: 9px;
+      font-family: Consolas, Monaco, monospace;
+      font-size: 12px;
       white-space: pre-wrap;
-      overflow-wrap: anywhere;
+      word-break: break-word;
     }
 
     .query-actions {
-      padding: 9px 13px;
-
-      border-top: 1px solid var(--border);
-
+      margin-top: 8px;
       display: flex;
-      flex-wrap: wrap;
-      align-items: center;
       gap: 7px;
-
-      background: rgba(255, 255, 255, 0.012);
+      flex-wrap: wrap;
     }
 
-    .action-link,
-    .copy-query {
-      padding: 6px 9px;
-
-      border: 1px solid var(--border);
-      border-radius: 6px;
-
-      color: #aebdcb;
-      background: #0d131b;
-
-      font-size: 10px;
-      font-weight: 750;
-      text-decoration: none;
-
-      transition:
-        border-color 0.15s ease,
-        color 0.15s ease,
-        background 0.15s ease;
-    }
-
-    .action-link:hover,
-    .copy-query:hover {
-      border-color: rgba(53, 167, 255, 0.45);
-
-      color: #dff3ff;
-      background: rgba(53, 167, 255, 0.07);
-    }
-
-    .copy-query {
-      margin-left: auto;
-    }
-
-    .footer {
-      max-width: 1500px;
-      margin: 0 auto;
-      padding: 0 24px 38px;
-
-      color: var(--muted-2);
-      font-size: 11px;
-      line-height: 1.65;
-    }
-
-    .footer strong {
-      color: #9ba9b7;
-    }
-
-    .toast {
-      position: fixed;
-      right: 22px;
-      bottom: 22px;
-      z-index: 999;
-
-      max-width: min(360px, calc(100vw - 44px));
-      padding: 11px 14px;
-
-      border: 1px solid rgba(69, 212, 131, 0.28);
-      border-radius: 9px;
-
-      color: #baf1cf;
-      background: rgba(14, 31, 23, 0.96);
-
-      box-shadow: var(--shadow);
-
+    .query-actions a,
+    .query-actions button {
       font-size: 12px;
-
-      opacity: 0;
-      pointer-events: none;
-      transform: translateY(8px);
-
-      transition:
-        opacity 0.18s ease,
-        transform 0.18s ease;
+      padding: 5px 8px;
+      text-decoration: none;
+      border: 1px solid #444;
+      background: #202020;
+      color: #ddd;
     }
 
-    .toast.visible {
-      opacity: 1;
-      transform: translateY(0);
+    .query-actions a:hover,
+    .query-actions button:hover {
+      background: #2b2b2b;
     }
 
-    .error {
-      border-color: rgba(255, 101, 122, 0.55) !important;
+    footer {
+      color: #777;
+      padding: 28px 0 40px;
+      font-size: 12px;
     }
 
-    @media (max-width: 980px) {
-      .shell {
+    @media (max-width: 850px) {
+      .layout {
         grid-template-columns: 1fr;
       }
 
-      .controls {
-        position: static;
-      }
-
-      .results-panel {
-        min-height: 500px;
-      }
-    }
-
-    @media (max-width: 650px) {
-      .header-inner,
-      .hero,
-      .shell,
-      .footer {
-        padding-left: 16px;
-        padding-right: 16px;
-      }
-
-      .hero {
-        padding-top: 28px;
-      }
-
-      .brand-subtitle {
-        display: none;
-      }
-
-      .results-toolbar {
-        align-items: stretch;
-      }
-
-      .results-summary {
+      .results-toolbar input {
         width: 100%;
       }
 
-      .search-wrap {
-        width: 100%;
+      .query-header {
+        display: block;
       }
 
-      .toolbar-actions {
-        width: 100%;
-      }
-
-      .toolbar-actions .btn {
-        flex: 1;
-      }
-
-      .query-meta {
-        align-items: flex-start;
-        flex-direction: column;
-      }
-
-      .copy-query {
-        margin-left: 0;
+      .query-target {
+        margin-top: 4px;
       }
     }
   </style>
 </head>
 
 <body>
-  <header class="header">
-    <div class="header-inner">
-      <div class="brand">
-        <div class="brand-icon">&gt;_</div>
-
-        <div>
-          <div class="brand-name">DORKER</div>
-
-          <div class="brand-subtitle">
-            External Assessment OSINT Query Builder
-          </div>
-        </div>
-      </div>
-
-      <div class="version">V2.0</div>
+  <header>
+    <div class="wrap">
+      <h1>Dorker</h1>
+      <div class="subtitle">Passive OSINT query builder for authorized external assessments.</div>
     </div>
   </header>
 
-  <section class="hero">
-    <div class="eyebrow">
-      Passive OSINT • External Assessments
+  <main class="wrap">
+    <div class="notice">
+      Dorker builds search-engine queries only. It does not scan, crawl, authenticate to, or exploit target systems.
+      Treat results as leads and validate scope before interacting with discovered assets.
     </div>
 
-    <h1>
-      Build better reconnaissance queries.
-    </h1>
+    <div class="layout">
+      <section class="panel">
+        <h2>Query Setup</h2>
 
-    <p class="hero-text">
-      Generate structured search-engine queries for publicly indexed
-      attack-surface information, authentication portals, APIs,
-      development environments, technical documentation, cloud
-      references, public code, organizational footprinting, and other
-      external-assessment OSINT.
-    </p>
-  </section>
-
-  <main class="shell">
-    <aside class="panel controls">
-      <div class="panel-header">
-        <h2 class="panel-title">
-          Assessment Configuration
-        </h2>
-      </div>
-
-      <div class="panel-body">
-        <div class="field">
-          <div class="label-row">
-            <label for="targets">Target Domains</label>
-
-            <span class="hint">
-              One per line
-            </span>
+        <div class="panel-body">
+          <div class="field">
+            <label class="heading" for="targets">Target domain(s)</label>
+            <textarea id="targets" placeholder="example.com&#10;example.org"></textarea>
+            <div class="help">One per line. Full URLs are okay; Dorker will normalize them.</div>
           </div>
 
-          <textarea
-            id="targets"
-            spellcheck="false"
-            placeholder="example.com&#10;example.org"
-          ></textarea>
-        </div>
-
-        <div class="field">
-          <div class="label-row">
-            <span class="field-label">
-              Assessment Modules
-            </span>
-
-            <span class="hint" id="moduleSummary">
-              Loading…
-            </span>
+          <div class="field">
+            <label class="heading">Modules</label>
+            <div id="moduleList" class="module-list"></div>
+            <div class="help" id="moduleSummary"></div>
           </div>
 
-          <div
-            id="moduleList"
-            class="module-list"
-          ></div>
-        </div>
+          <div class="field">
+            <label class="heading" for="exclusions">Custom exclusions</label>
+            <input id="exclusions" type="text" placeholder="blog, careers, press">
+            <div class="help">Optional. Separate with commas.</div>
+          </div>
 
-        <div class="field">
-          <div class="label-row">
-            <label for="exclusions">
-              Custom Exclusions
+          <div class="field">
+            <label class="option">
+              <input id="reduceNoise" type="checkbox">
+              Reduce common marketing noise
             </label>
 
-            <span class="hint">
-              Optional
-            </span>
-          </div>
-
-          <input
-            id="exclusions"
-            type="text"
-            spellcheck="false"
-            placeholder="blog, careers, press"
-          />
-        </div>
-
-        <div class="field">
-          <div class="label-row">
-            <span class="field-label">
-              Query Options
-            </span>
-          </div>
-
-          <div class="inline-options">
-            <label class="toggle">
-              <input
-                id="reduceNoise"
-                type="checkbox"
-              />
-
-              <span>
-                Reduce common marketing noise
-                <br />
-
-                <span class="hint">
-                  Excludes blog, news, press, events, and careers paths.
-                </span>
-              </span>
-            </label>
-
-            <label class="toggle">
-              <input
-                id="excludeWww"
-                type="checkbox"
-              />
-
-              <span>
-                De-emphasize the primary www host
-                <br />
-
-                <span class="hint">
-                  Adds -site:www.target.com to target-scoped queries.
-                </span>
-              </span>
+            <label class="option">
+              <input id="excludeWww" type="checkbox">
+              De-emphasize www host
             </label>
           </div>
-        </div>
 
-        <div class="button-row">
-          <button
-            id="generateBtn"
-            type="button"
-            class="btn btn-primary"
-          >
-            Generate Queries
-          </button>
-
-          <button
-            id="resetBtn"
-            type="button"
-            class="btn"
-          >
-            Reset
-          </button>
-        </div>
-      </div>
-    </aside>
-
-    <section class="panel results-panel">
-      <div class="results-toolbar">
-        <div class="results-summary">
-          <div class="result-count">
-            <span id="resultCount">0</span>
-            Queries
-          </div>
-
-          <div
-            id="resultSubtitle"
-            class="result-subtitle"
-          >
-            Configure an assessment to begin.
+          <div class="buttons">
+            <button id="generateBtn" class="primary" type="button">Generate</button>
+            <button id="resetBtn" type="button">Reset</button>
           </div>
         </div>
+      </section>
 
-        <div class="search-wrap">
-          <input
-            id="resultSearch"
-            type="text"
-            spellcheck="false"
-            placeholder="Filter generated queries…"
-            disabled
-          />
+      <section class="panel">
+        <h2>Queries</h2>
+
+        <div class="results-toolbar">
+          <div class="count"><span id="resultCount">0</span> shown</div>
+          <input id="resultSearch" type="text" placeholder="Filter results" disabled>
+          <button id="copyAllBtn" type="button" disabled>Copy all</button>
+          <button id="exportBtn" type="button" disabled>Export .txt</button>
         </div>
 
-        <div class="toolbar-actions">
-          <button
-            id="copyAllBtn"
-            type="button"
-            class="btn btn-small"
-            disabled
-          >
-            Copy All
-          </button>
+        <div id="message"></div>
 
-          <button
-            id="exportBtn"
-            type="button"
-            class="btn btn-small"
-            disabled
-          >
-            Export TXT
-          </button>
+        <div id="emptyState" class="empty">
+          Enter a target, choose your modules, and click Generate.
         </div>
-      </div>
 
-      <div
-        id="notice"
-        class="notice"
-      ></div>
-
-      <div
-        id="emptyState"
-        class="empty-state"
-      >
-        <div>
-          <div class="empty-icon">
-            OS
-          </div>
-
-          <h2>
-            Ready for assessment OSINT
-          </h2>
-
-          <p>
-            Enter an authorized target domain, select the assessment
-            modules you want to investigate, and Dorker will build
-            categorized passive-search queries.
-          </p>
-        </div>
-      </div>
-
-      <div
-        id="results"
-        class="results"
-        hidden
-      ></div>
-    </section>
+        <div id="results"></div>
+      </section>
+    </div>
   </main>
 
-  <footer class="footer">
-    <strong>Authorized use only.</strong>
-
-    Dorker generates passive search-engine queries and does not scan,
-    exploit, authenticate to, or automatically send requests to target
-    systems. Search results are investigative leads and should be
-    independently validated within the scope and rules of engagement
-    for the applicable assessment.
+  <footer class="wrap">
+    Authorized assessment use only. Search-engine syntax and indexing behavior vary by provider.
   </footer>
 
-  <div
-    id="toast"
-    class="toast"
-    role="status"
-    aria-live="polite"
-  ></div>
-
-  <script src="app.js" defer></script>
+  <script src="app.js"></script>
 </body>
 </html>
-```
