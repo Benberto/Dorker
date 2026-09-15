@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Build and preview advanced Google and DuckDuckGo search queries.">
+<title>Dorker — Search query builder</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='10' fill='%23141e29'/%3E%3Ctext x='9' y='29' fill='%23bcf575' font-size='28'%3Ed%3C/text%3E%3C/svg%3E">
+<style>
+:root{color-scheme:dark;font-family:Inter,Segoe UI,Arial,sans-serif;background:#10161e;color:#eef3f8;font-synthesis:none}*{box-sizing:border-box}body{margin:0}header,main,footer{max-width:1180px;margin:auto;padding:28px}header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #2b3540}.brand{font-size:24px;font-weight:750;letter-spacing:-1px}.brand span{color:#bcf575}header small{color:#99a8b8;font:12px monospace}h1{font-size:clamp(28px,4vw,40px);letter-spacing:-1.3px;margin:22px 0 10px}p{color:#a4b2c1;line-height:1.6}.intro{margin-bottom:30px}.layout{display:grid;grid-template-columns:390px 1fr;gap:24px;align-items:start}.panel{border:1px solid #303c48;border-radius:16px;background:#17212c;padding:25px}h2{font-size:17px;margin:0 0 24px}.step{color:#bcf575;font:12px monospace;margin-right:10px}label,legend{font-size:13px;font-weight:650;display:block;margin-bottom:9px}.hint{font-size:12px;margin:7px 0 22px}input,textarea,select,button,a.action{font:inherit}input,textarea,select{width:100%;border:1px solid #435363;border-radius:8px;background:#101820;color:#eff5fa;padding:12px;outline:none}textarea{resize:vertical;min-height:84px}input:focus,textarea:focus,select:focus{border-color:#bcf575}fieldset{border:0;padding:0;margin:0 0 22px}.modes{display:flex;gap:8px}.modes label{flex:1;padding:12px;border:1px solid #435363;border-radius:8px;margin:0;font-size:12px;cursor:pointer}.modes input{width:auto;accent-color:#bcf575;margin:0 5px 0 0}button,.action{border:1px solid #455767;border-radius:8px;background:#233241;color:#eff5fa;padding:10px 14px;cursor:pointer;text-decoration:none;display:inline-block;font-size:13px}button:hover,.action:hover{background:#34475a}button.primary{background:#bcf575;color:#14210b;border-color:#bcf575;width:100%;font-weight:750;padding:14px}button:focus-visible,a:focus-visible{outline:2px solid #bcf575;outline-offset:4px}.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}.toolbar button:disabled{opacity:.4;cursor:default}.result-head{display:flex;justify-content:space-between;align-items:baseline}.count{color:#bcf575;font:12px monospace}.empty{padding:65px 15px;text-align:center;border:1px dashed #425365;border-radius:10px}.empty strong{font-size:18px}.empty p{font-size:14px}.query{padding:18px 0;border-top:1px solid #33414e}.query code{display:block;white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px;line-height:1.7;margin:0 0 12px;color:#d3e4f4}.query .action{margin-right:7px;font-size:12px}.status{font-size:13px;color:#bcf575;min-height:20px;margin:12px 0}footer{font-size:12px;color:#8999aa;line-height:1.8}footer a{color:inherit}#results{max-height:640px;overflow:auto}#error{color:#ffb6a9} @media(max-width:800px){.layout{grid-template-columns:1fr}header,main,footer{padding:20px}.panel{padding:20px}header small{font-size:10px}#results{max-height:none}}
+</style>
+</head>
+<body>
+<header><div class="brand"><span>⌕</span> dorker<span>.</span></div><small>PRECISION SEARCH / QUERY BUILDER</small></header>
+<main><div class="intro"><h1>A better starting point for search.</h1><p>Turn domains, terms, and file types into ready-to-run search queries.</p></div>
+<div class="layout"><section class="panel"><h2><span class="step">01</span>Define your search</h2>
+<form id="builder">
+<label for="domains">Domains</label><textarea id="domains" placeholder="example.com, example.org" required></textarea><p class="hint">Separate domains with commas or new lines. URLs work too.</p>
+<label for="terms">Search terms</label><textarea id="terms" placeholder="annual report, documentation"></textarea><p class="hint">One exact phrase per comma or line. Leave blank for any term.</p>
+<label for="types">File types</label><input id="types" value="pdf, docx, xlsx" placeholder="pdf, docx, xlsx"><p class="hint">Leave blank to search all file types.</p>
+<fieldset><legend>Query mode</legend><div class="modes"><label><input type="radio" name="mode" value="combined" checked>Combined</label><label><input type="radio" name="mode" value="granular">Granular</label></div><p class="hint">Combined: one query per domain. Granular: every term and file type combination.</p></fieldset>
+<button class="primary" type="submit">Generate queries →</button><p id="error" role="alert"></p>
+</form></section>
+<section class="panel"><div class="result-head"><h2><span class="step">02</span>Preview & search</h2><span id="count" class="count">0 QUERIES</span></div>
+<div class="toolbar"><button id="copy" disabled>Copy all</button><button id="download" disabled>Download .txt</button><button id="clear" disabled>Clear</button></div>
+<div id="results"><div class="empty"><strong>Your search starts here</strong><p>Add a domain and generate your queries.<br>Review each query, then open it in Google or DuckDuckGo.</p></div></div><p id="status" class="status" role="status" aria-live="polite"></p>
+</section></div></main>
+<footer>Queries run only when you open a search link. All query generation happens in your browser.<br>Inspired by <a href="https://github.com/jinouchi/dorker" target="_blank" rel="noopener noreferrer">jinouchi/dorker</a>. Use responsibly and respect the privacy of others.</footer>
+<script src="app.js"></script>
+</body></html>
