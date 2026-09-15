@@ -3,16 +3,6 @@
 /*
   Dorker
   Passive OSINT query builder for authorized external assessments.
-
-  Designed for:
-  - htmlpreview.github.io
-  - GitHub Pages
-  - local browser use
-
-  No frameworks.
-  No build tools.
-  No modules.
-  Classic JavaScript syntax for broad compatibility.
 */
 
 var MAX_QUERIES = 500;
