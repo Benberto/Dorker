@@ -67,9 +67,14 @@
       align-items: start;
     }
 
+    .left-column {
+      min-width: 0;
+    }
+
     .panel {
       border: 1px solid #333;
       background: #171717;
+      margin-bottom: 20px;
     }
 
     .panel h2 {
@@ -91,8 +96,7 @@
     }
 
     textarea,
-    input[type="text"],
-    select {
+    input[type="text"] {
       width: 100%;
       background: #0d0d0d;
       color: #eee;
@@ -108,13 +112,8 @@
     }
 
     textarea:focus,
-    input[type="text"]:focus,
-    select:focus {
+    input[type="text"]:focus {
       border-color: #777;
-    }
-
-    select {
-      cursor: pointer;
     }
 
     .field {
@@ -145,6 +144,7 @@
       color: #eee;
       padding: 9px 13px;
       cursor: pointer;
+      font: inherit;
     }
 
     button:hover {
@@ -165,6 +165,148 @@
     button:disabled {
       opacity: 0.45;
       cursor: default;
+    }
+
+    /*
+      Query pack picker
+    */
+
+    .pack-picker {
+      position: relative;
+    }
+
+    .pack-picker-button {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      text-align: left;
+      background: #0d0d0d;
+      border: 1px solid #444;
+      padding: 9px 10px;
+    }
+
+    .pack-picker-button:hover {
+      background: #151515;
+    }
+
+    .pack-picker-label {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      padding-right: 10px;
+    }
+
+    .pack-arrow {
+      color: #999;
+      flex-shrink: 0;
+    }
+
+    .pack-menu {
+      display: none;
+      position: absolute;
+      z-index: 100;
+      top: calc(100% + 4px);
+      left: 0;
+      width: 100%;
+      border: 1px solid #444;
+      background: #111;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+    }
+
+    .pack-menu.open {
+      display: block;
+    }
+
+    .pack-menu-tools {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 8px;
+      border-bottom: 1px solid #333;
+    }
+
+    .pack-menu-tools button {
+      padding: 5px 7px;
+      font-size: 11px;
+      flex: 1;
+    }
+
+    .pack-options {
+      max-height: 310px;
+      overflow-y: auto;
+    }
+
+    .pack-option {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      padding: 9px 10px;
+      border-bottom: 1px solid #292929;
+      cursor: pointer;
+    }
+
+    .pack-option:last-child {
+      border-bottom: 0;
+    }
+
+    .pack-option:hover {
+      background: #1b1b1b;
+    }
+
+    .pack-option input {
+      margin-top: 3px;
+      flex-shrink: 0;
+    }
+
+    .pack-option-name {
+      display: block;
+      font-weight: 700;
+    }
+
+    .pack-option-desc {
+      display: block;
+      color: #888;
+      font-size: 11px;
+      margin-top: 2px;
+    }
+
+    /*
+      About query packs
+    */
+
+    .about-pack {
+      padding: 12px 14px;
+      border-bottom: 1px solid #2d2d2d;
+    }
+
+    .about-pack:last-child {
+      border-bottom: 0;
+    }
+
+    .about-pack-name {
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .about-pack-desc {
+      color: #aaa;
+      font-size: 12px;
+    }
+
+    .about-pack-types {
+      margin-top: 6px;
+      color: #777;
+      font-size: 11px;
+      font-family: Consolas, Monaco, monospace;
+    }
+
+    /*
+      Results
+    */
+
+    .results-panel {
+      min-width: 0;
     }
 
     .results-toolbar {
@@ -221,10 +363,6 @@
     .query {
       padding: 13px 14px;
       border-top: 1px solid #292929;
-    }
-
-    .query:first-of-type {
-      border-top: 0;
     }
 
     .query-header {
@@ -285,7 +423,7 @@
 
     footer {
       color: #777;
-      padding: 28px 0 40px;
+      padding: 10px 0 40px;
       font-size: 12px;
     }
 
@@ -303,6 +441,11 @@
       }
 
       .query-target {
+        margin-top: 4px;
+      }
+
+      .pack-menu {
+        position: static;
         margin-top: 4px;
       }
     }
@@ -329,107 +472,157 @@
     </div>
 
     <div class="layout">
-      <section class="panel">
-        <h2>Query Setup</h2>
 
-        <div class="panel-body">
-          <div class="field">
-            <label
-              class="heading"
-              for="targets"
-            >
-              Target domain(s)
-            </label>
+      <div class="left-column">
 
-            <textarea
-              id="targets"
-              placeholder="example.com&#10;example.org"
-            ></textarea>
+        <section class="panel">
+          <h2>Query Setup</h2>
 
-            <div class="help">
-              One per line. Full URLs are okay; Dorker will normalize them.
-            </div>
-          </div>
+          <div class="panel-body">
 
-          <div class="field">
-            <label
-              class="heading"
-              for="queryPack"
-            >
-              Query pack
-            </label>
-
-            <select id="queryPack">
-              <option value="">
-                Choose a query pack...
-              </option>
-            </select>
-
-            <div
-              class="help"
-              id="packDescription"
-            >
-              Select a query pack to see what it searches for.
-            </div>
-          </div>
-
-          <div class="field">
-            <label
-              class="heading"
-              for="exclusions"
-            >
-              Custom exclusions
-            </label>
-
-            <input
-              id="exclusions"
-              type="text"
-              placeholder="blog, careers, press"
-            >
-
-            <div class="help">
-              Optional. Separate with commas.
-            </div>
-          </div>
-
-          <div class="field">
-            <label class="option">
-              <input
-                id="reduceNoise"
-                type="checkbox"
+            <div class="field">
+              <label
+                class="heading"
+                for="targets"
               >
-              Reduce common marketing noise
-            </label>
+                Target domain(s)
+              </label>
 
-            <label class="option">
-              <input
-                id="excludeWww"
-                type="checkbox"
+              <textarea
+                id="targets"
+                placeholder="example.com&#10;example.org"
+              ></textarea>
+
+              <div class="help">
+                One per line. Full URLs are okay; Dorker will normalize them.
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="heading">
+                Query packs
+              </label>
+
+              <div class="pack-picker">
+                <button
+                  id="packPickerButton"
+                  class="pack-picker-button"
+                  type="button"
+                >
+                  <span
+                    id="packPickerLabel"
+                    class="pack-picker-label"
+                  >
+                    Select query packs
+                  </span>
+
+                  <span class="pack-arrow">
+                    ▼
+                  </span>
+                </button>
+
+                <div
+                  id="packMenu"
+                  class="pack-menu"
+                >
+                  <div class="pack-menu-tools">
+                    <button
+                      id="selectAllPacks"
+                      type="button"
+                    >
+                      Select all
+                    </button>
+
+                    <button
+                      id="clearAllPacks"
+                      type="button"
+                    >
+                      Clear all
+                    </button>
+                  </div>
+
+                  <div
+                    id="packOptions"
+                    class="pack-options"
+                  ></div>
+                </div>
+              </div>
+
+              <div
+                id="packCount"
+                class="help"
               >
-              De-emphasize www host
-            </label>
+                0 packs selected.
+              </div>
+            </div>
+
+            <div class="field">
+              <label
+                class="heading"
+                for="exclusions"
+              >
+                Custom exclusions
+              </label>
+
+              <input
+                id="exclusions"
+                type="text"
+                placeholder="blog, careers, press"
+              >
+
+              <div class="help">
+                Optional. Separate with commas.
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="option">
+                <input
+                  id="reduceNoise"
+                  type="checkbox"
+                >
+                Reduce common marketing noise
+              </label>
+
+              <label class="option">
+                <input
+                  id="excludeWww"
+                  type="checkbox"
+                >
+                De-emphasize www host
+              </label>
+            </div>
+
+            <div class="buttons">
+              <button
+                id="generateBtn"
+                class="primary"
+                type="button"
+              >
+                Generate
+              </button>
+
+              <button
+                id="resetBtn"
+                type="button"
+              >
+                Reset
+              </button>
+            </div>
+
           </div>
+        </section>
 
-          <div class="buttons">
-            <button
-              id="generateBtn"
-              class="primary"
-              type="button"
-            >
-              Generate
-            </button>
+        <section class="panel">
+          <h2>About Query Packs</h2>
 
-            <button
-              id="resetBtn"
-              type="button"
-            >
-              Reset
-            </button>
+          <div id="aboutPacks">
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section class="panel">
+      </div>
+
+      <section class="panel results-panel">
         <h2>Queries</h2>
 
         <div class="results-toolbar">
@@ -468,11 +661,12 @@
           id="emptyState"
           class="empty"
         >
-          Enter a target, choose a query pack, and click Generate.
+          Enter a target, select one or more query packs, and click Generate.
         </div>
 
         <div id="results"></div>
       </section>
+
     </div>
   </main>
 
