@@ -1676,10 +1676,6 @@ function buildExport(items) {
 
   lines.push("");
 
-  lines.push(
-    "Generated: " +
-    new Date().toString()
-  );
 
   lines.push(
     "Queries: " +
@@ -1688,9 +1684,6 @@ function buildExport(items) {
 
   lines.push("");
 
-  lines.push(
-    "Authorized assessment use only."
-  );
 
   lines.push("");
 
