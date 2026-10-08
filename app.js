@@ -1667,7 +1667,7 @@ function buildExport(items) {
   var item;
 
   lines.push(
-    "DORKER QUERIES"
+    "DORKER QUERIES USED FOR ASSESSMENT"
   );
 
   lines.push(
