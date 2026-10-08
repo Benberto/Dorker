@@ -1667,7 +1667,7 @@ function buildExport(items) {
   var item;
 
   lines.push(
-    "DORKER - EXTERNAL ASSESSMENT OSINT"
+    "DORKER QUERIES"
   );
 
   lines.push(
